@@ -1,0 +1,10 @@
+body {
+	margin: auto;
+	margin-top: 75px;
+	background: #9F8989;
+	text-align: center;
+	font-family: Wideboy, sans-serif;
+}
+canvas {
+	background-color: black;
+}
