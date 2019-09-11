@@ -19,12 +19,38 @@
 <script>
 	var canvas = document.getElementById( "grid" );
 	var context = canvas.getContext( "2d" );
-	/*
-	context.moveTo(0,0);
-	context.lineTo(400, 400);
-	context.stroke();
-	*/
-	drawGrid(context, 41, 41, 'black');
-	draw_triangle(context, 376, 376, 369, 362, 362, 376);
+	var color = 'black';//canvas.backgroundColor;
+	var direction;
+	var triangle;
+	var center = 369;
+	
+	drawGrid(context, 41, 41, 'white');
+	// setting the direction of the 
+	var rand = Math.floor(Math.random() * 4)
+	switch(rand) {
+		case 0:
+			// triangle -> north
+			direction = 0;
+			triangle = draw_triangle_N(context, center, center);
+			break;
+		case 1:
+			// triangle -> east
+			direction = 1;
+			triangle = draw_triangle_E(context, center, center);
+			break;
+		case 2:
+			// triangle -> south
+			direction = 2;
+			triangle = draw_triangle_S(context, center, center);
+			break;
+		case 3:
+			// triangle -> west
+			direction = 3;
+			triangle = draw_triangle_W(context, center, center);
+	}
+
+	move(context, direction, triangle, center, center, color);
+
+
 </script>
 </html>

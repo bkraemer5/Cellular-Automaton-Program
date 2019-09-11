@@ -6,6 +6,6 @@ body {
 	font-family: Wideboy, sans-serif;
 }
 canvas {
-	background-color: white;
+	background: black;
 	margin-bottom: 75px;
 }
