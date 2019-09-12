@@ -96,81 +96,106 @@ function drawSquare(contxt, posX, posY, color) {
 	contxt.fillRect(posX-8, posY-8, 16, 16);
 }
 
-function move(contxt, dir, tri, posX, posY, color) {
-	/* if (posX < 0 || posY < 0) { 
-		break;
+function turnRight(dir) {
+	if (dir < 3) {
+		dir++;
 	}
-	
-	else {*/
+	else {
+		dir = 0;
+	}
+}
+
+function turnLeft(dir) {
+	if (dir > 0) {
+		dir--;
+	}
+	else {
+		dir = 3;
+	}
+}
+
+function move(contxt, dir, posX, posY, color, colors, moves) {
+	while (posX >= 0 && posY >= 0 && posX <= contxt.canvas.width && posY <= contxt.canvas.height && moves > 0) {
+		moves--;
 		drawSquare(contxt, posX, posY, color);
-		switch(color) {
-			case 'black':
-				// turn right
-				if (dir < 3) {
-					dir++;
-				}
-				else {
-					dir = 0;
-				}
-				color = 'red';
-				break;
-			case 'red':
-				// turn right
-				if (dir < 3) {
-					dir++;
-				}
-				else {
-					dir = 0;
-				}
-				color = 'yellow';
-				break;
-			case 'yellow':
-				// turn left
-				if (dir > 0) {
-					dir--;
-				}
-				else {
-					dir = 3;
-				}
-				color = 'blue';
-				break;
-			case 'blue':
-				// turn left
-				if (dir > 0) {
-					dir--;
-				}
-				else {
-					dir = 3;
-				}
-				color = 'black';
+		
+		var temp;
+		for (i=3; i > 0; i--) {
+			temp = colors[i];
+			colors[i] = colors[i-1];
+			colors[i-1] = temp;
 		}
+
+		//var condition = true;
+		switch(true) {
+			case color == colors[0]:
+				console.log("0");
+				if (dir < 3) {
+					dir++;
+				}
+				else {
+					dir = 0;
+				}
+				color = colors[1];
+				break;
+			case color == colors[1]:
+				console.log("1");
+				if (dir < 3) {
+					dir++;
+				}
+				else {
+					dir = 0;
+				}
+				color = colors[2];
+				break;
+			case color == colors[2]:
+				console.log("2");
+				if (dir > 0) {
+					dir--;
+				}
+				else {
+					dir = 3;
+				}
+				color = colors[3];
+				break;
+			case color == colors[3]:
+				console.log("3");
+				if (dir > 0) {
+					dir--;
+				}
+				else {
+					dir = 3;
+				}
+				color = colors[0];
+		}
+	
 
 		switch(dir) {
 			case 0:
 				// triangle -> north
 				posY-=18;
 				drawSquare(contxt, posX, posY, color);
-				tri = draw_triangle_N(contxt, posX, posY);
+				draw_triangle_N(contxt, posX, posY);
 				break;
 			case 1:
 				// triangle -> east
 				posX+=18;
 				drawSquare(contxt, posX, posY, color);
-				tri = draw_triangle_E(contxt, posX, posY);
+				draw_triangle_E(contxt, posX, posY);
 				break;
 			case 2:
 				// triangle -> south
 				posY+=18;
 				drawSquare(contxt, posX, posY, color);
-				tri = draw_triangle_S(contxt, posX, posY);
+				draw_triangle_S(contxt, posX, posY);
 				break;
 			case 3:
 				// triangle -> west
 				posX-=18;
 				drawSquare(contxt, posX, posY, color);
-				tri = draw_triangle_W(contxt, posX, posY);
+				draw_triangle_W(contxt, posX, posY);
 		}
-		return move(contxt, dir, tri, posX, posY, color);
+		return move(contxt, dir, posX, posY, color, colors, moves);
 	}
-	//return move(contxt, dir, tri, posX, posY, color);
-//}
+
+}
