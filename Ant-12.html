@@ -20,13 +20,15 @@
 	var canvas = document.getElementById( "grid" );
 	var context = canvas.getContext( "2d" );
 	var color = 'black';//canvas.backgroundColor;
-	var direction;
+	var state = 0;
+	var direction = 0;
 	var triangle;
 	var center = 369;
 	var colors = ['black', 'red', 'yellow', 'blue'];
 	var moves = 1000;
 	
 	drawGrid(context, 41, 41, 'white');
+
 	// setting the direction of the pointer
 	var rand = Math.floor(Math.random() * 4)
 	switch(rand) {
@@ -51,7 +53,7 @@
 			triangle = draw_triangle_W(context, center, center);
 	}
 
-	move(context, direction, center, center, color, colors, moves);
+	move(context, state, direction, center, center, colors, moves);
 
 
 </script>

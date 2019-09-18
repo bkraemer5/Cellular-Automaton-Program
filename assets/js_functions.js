@@ -114,11 +114,32 @@ function turnLeft(dir) {
 	}
 }
 
-function move(contxt, dir, posX, posY, color, colors, moves) {
+/*
+function grabColor(contxt, posX, posY) {
+	color = contxt.getImageData(posX, posY, 1, 1).data
+	r = color.data[0];
+	g = color.data[1];
+	b = color.data[2];
+	if (r == 0 && g == 0 && b == 0) {
+		return 'black';
+	}
+	else if (r == 255 && g == 0 && b == 0) {
+		return 'red';
+	}
+	else if (r == 255 && g == 255 && b == 0) {
+		return 'yellow';
+	}
+	else if (r == 0 && g == 0 && b == 255) {
+		return 'blue';
+	}
+}
+*/
+
+function move(contxt, state, dir, posX, posY, colors, moves) {
 	while (posX >= 0 && posY >= 0 && posX <= contxt.canvas.width && posY <= contxt.canvas.height && moves > 0) {
+
 		moves--;
-		drawSquare(contxt, posX, posY, color);
-		
+
 		var temp;
 		for (i=3; i > 0; i--) {
 			temp = colors[i];
@@ -126,76 +147,88 @@ function move(contxt, dir, posX, posY, color, colors, moves) {
 			colors[i-1] = temp;
 		}
 
-		//var condition = true;
-		switch(true) {
-			case color == colors[0]:
-				console.log("0");
-				if (dir < 3) {
-					dir++;
-				}
-				else {
-					dir = 0;
-				}
-				color = colors[1];
-				break;
-			case color == colors[1]:
-				console.log("1");
-				if (dir < 3) {
-					dir++;
-				}
-				else {
-					dir = 0;
-				}
-				color = colors[2];
-				break;
-			case color == colors[2]:
-				console.log("2");
-				if (dir > 0) {
-					dir--;
-				}
-				else {
-					dir = 3;
-				}
-				color = colors[3];
-				break;
-			case color == colors[3]:
-				console.log("3");
-				if (dir > 0) {
-					dir--;
-				}
-				else {
-					dir = 3;
-				}
-				color = colors[0];
+		//drawSquare(contxt, posX, posY, colors[0]);
+
+		space = contxt.getImageData(posX, posY, 1, 1);
+		r = space.data[0];
+		g = space.data[1];
+		b = space.data[2];
+		
+		if (r == 0 && g == 0 && b == 0) {
+			color = 'black';
 		}
-	
+		else if (r == 255 && g == 0 && b == 0) {
+			color = 'red';
+		}
+		else if (r == 255 && g == 255 && b == 0) {
+			color = 'yellow';
+		}
+		else if (r == 0 && g == 0 && b == 255) {
+			color = 'blue';
+		}
+		
+		console.log(color);
+
+		drawSquare(contxt, posX, posY, colors[0]);
+
+		
+		switch(true) {
+			case color == 'black':
+				if (dir < 3) {
+					dir++;
+				}
+				else {
+					dir = 0;
+				}
+				break;
+			case color == 'red':
+				if (dir < 3) {
+					dir++;
+				}
+				else {
+					dir = 0;
+				}
+				break;
+			case color == 'yellow':
+				if (dir > 0) {
+					dir--;
+				}
+				else {
+					dir = 3;
+				}
+				break;
+			case color == 'blue':
+				if (dir > 0) {
+					dir--;
+				}
+				else {
+					dir = 3;
+				}
+		}
 
 		switch(dir) {
 			case 0:
 				// triangle -> north
 				posY-=18;
-				drawSquare(contxt, posX, posY, color);
 				draw_triangle_N(contxt, posX, posY);
 				break;
 			case 1:
 				// triangle -> east
 				posX+=18;
-				drawSquare(contxt, posX, posY, color);
 				draw_triangle_E(contxt, posX, posY);
 				break;
 			case 2:
 				// triangle -> south
 				posY+=18;
-				drawSquare(contxt, posX, posY, color);
 				draw_triangle_S(contxt, posX, posY);
 				break;
 			case 3:
 				// triangle -> west
 				posX-=18;
-				drawSquare(contxt, posX, posY, color);
 				draw_triangle_W(contxt, posX, posY);
 		}
-		return move(contxt, dir, posX, posY, color, colors, moves);
+		
+		return move(contxt, state, dir, posX, posY, colors, moves);
 	}
 
 }
