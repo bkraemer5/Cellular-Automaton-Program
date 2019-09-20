@@ -2,9 +2,9 @@
 function draw_triangle_N(contxt, posX, posY) {
 	contxt.save();
 	contxt.beginPath(); 
-	contxt.moveTo(posX-8, posY+8); 
-	contxt.lineTo(posX, posY-8);
-	contxt.lineTo(posX+8, posY+8);
+	contxt.moveTo(posX-7, posY+7); 
+	contxt.lineTo(posX, posY-7);
+	contxt.lineTo(posX+7, posY+7);
 	contxt.closePath();
 	contxt.fillStyle = 'white';
 	contxt.fill();
@@ -21,9 +21,9 @@ function draw_triangle_E(contxt, posX, posY) {
 	contxt.save();
 
 	contxt.beginPath(); 
-	contxt.moveTo(posX-8, posY-8); 
-	contxt.lineTo(posX+8, posY);
-	contxt.lineTo(posX-8, posY+8);
+	contxt.moveTo(posX-7, posY-7); 
+	contxt.lineTo(posX+7, posY);
+	contxt.lineTo(posX-7, posY+7);
 	contxt.closePath();
 	contxt.fillStyle = 'white';
 	contxt.fill();
@@ -38,9 +38,9 @@ function draw_triangle_S(contxt, posX, posY) {
 	contxt.save();
 
 	contxt.beginPath(); 
-	contxt.moveTo(posX+8, posY-8); 
-	contxt.lineTo(posX, posY+8);
-	contxt.lineTo(posX-8, posY-8);
+	contxt.moveTo(posX+7, posY-7); 
+	contxt.lineTo(posX, posY+7);
+	contxt.lineTo(posX-7, posY-7);
 	contxt.closePath();
 	contxt.fillStyle = 'white';
 	contxt.fill();
@@ -54,9 +54,9 @@ function draw_triangle_W(contxt, posX, posY) {
 	contxt.save();
 
 	contxt.beginPath(); 
-	contxt.moveTo(posX+8, posY+8); 
-	contxt.lineTo(posX-8, posY);
-	contxt.lineTo(posX+8, posY-8);
+	contxt.moveTo(posX+7, posY+7); 
+	contxt.lineTo(posX-7, posY);
+	contxt.lineTo(posX+7, posY-7);
 	contxt.closePath();
 	contxt.fillStyle = 'white';
 	contxt.fill();
@@ -90,145 +90,113 @@ function drawGrid(contxt, xG, yG, colorG) {
 	contxt.restore();
 }
 
-// draw square that will fit inside grid space given center position
+// draws a square that will fit inside grid space given center position
 function drawSquare(contxt, posX, posY, color) {
+	contxt.save();
+
 	contxt.fillStyle = color;
 	contxt.fillRect(posX-8, posY-8, 16, 16);
+
+	contxt.restore();
 }
 
-function turnRight(dir) {
-	if (dir < 3) {
-		dir++;
-	}
-	else {
-		dir = 0;
-	}
-}
+/* recursive function to move the user along the grid using the cella algorithm
+	takes in 7 Parameters:
+		1. contxt is the context (canvas) we are working with
+		2. state is the current state we are in 
+		3. dir is the direction the mover is facing
+		4. posX is the X position the mover is on in the canvas
+		5. posY is the Y position the mover is on in the canvas
+		6. colors is the array of colors we are working with
+		7. moves is the amount of moves the mover will make
+*/
+function move(contxt, state, dir, posX, posY, colors, moves) {
+	contxt.save();
 
-function turnLeft(dir) {
-	if (dir > 0) {
-		dir--;
+	// BREAK CASE
+	if (moves == 0) {
+		return;
 	}
-	else {
-		dir = 3;
-	}
-}
 
-/*
-function grabColor(contxt, posX, posY) {
-	color = contxt.getImageData(posX, posY, 1, 1).data
-	r = color.data[0];
-	g = color.data[1];
-	b = color.data[2];
+	// 'moves' decrements its self after each call to the function
+	moves--;
+	
+	// grabs the color of the square the mover is currently on
+	var space = contxt.getImageData(posX-8, posY-8, 1, 1);
+	r = space.data[0];
+	g = space.data[1];
+	b = space.data[2];
+
+	// compares each combination of rgb values. the color determines the state
 	if (r == 0 && g == 0 && b == 0) {
-		return 'black';
+		state = 0;
 	}
 	else if (r == 255 && g == 0 && b == 0) {
-		return 'red';
+		state = 1;
 	}
 	else if (r == 255 && g == 255 && b == 0) {
-		return 'yellow';
+		state = 2;
 	}
 	else if (r == 0 && g == 0 && b == 255) {
-		return 'blue';
-	}
-}
-*/
-
-function move(contxt, state, dir, posX, posY, colors, moves) {
-	while (posX >= 0 && posY >= 0 && posX <= contxt.canvas.width && posY <= contxt.canvas.height && moves > 0) {
-
-		moves--;
-
-		var temp;
-		for (i=3; i > 0; i--) {
-			temp = colors[i];
-			colors[i] = colors[i-1];
-			colors[i-1] = temp;
-		}
-
-		//drawSquare(contxt, posX, posY, colors[0]);
-
-		space = contxt.getImageData(posX, posY, 1, 1);
-		r = space.data[0];
-		g = space.data[1];
-		b = space.data[2];
-		
-		if (r == 0 && g == 0 && b == 0) {
-			color = 'black';
-		}
-		else if (r == 255 && g == 0 && b == 0) {
-			color = 'red';
-		}
-		else if (r == 255 && g == 255 && b == 0) {
-			color = 'yellow';
-		}
-		else if (r == 0 && g == 0 && b == 255) {
-			color = 'blue';
-		}
-		
-		console.log(color);
-
-		drawSquare(contxt, posX, posY, colors[0]);
-
-		
-		switch(true) {
-			case color == 'black':
-				if (dir < 3) {
-					dir++;
-				}
-				else {
-					dir = 0;
-				}
-				break;
-			case color == 'red':
-				if (dir < 3) {
-					dir++;
-				}
-				else {
-					dir = 0;
-				}
-				break;
-			case color == 'yellow':
-				if (dir > 0) {
-					dir--;
-				}
-				else {
-					dir = 3;
-				}
-				break;
-			case color == 'blue':
-				if (dir > 0) {
-					dir--;
-				}
-				else {
-					dir = 3;
-				}
-		}
-
-		switch(dir) {
-			case 0:
-				// triangle -> north
-				posY-=18;
-				draw_triangle_N(contxt, posX, posY);
-				break;
-			case 1:
-				// triangle -> east
-				posX+=18;
-				draw_triangle_E(contxt, posX, posY);
-				break;
-			case 2:
-				// triangle -> south
-				posY+=18;
-				draw_triangle_S(contxt, posX, posY);
-				break;
-			case 3:
-				// triangle -> west
-				posX-=18;
-				draw_triangle_W(contxt, posX, posY);
-		}
-		
-		return move(contxt, state, dir, posX, posY, colors, moves);
+		state = 3;
 	}
 
+	// draws the colored square on the board. should be the next color in the sequence
+	drawSquare(contxt, posX, posY, colors[++state]);
+	state--;
+
+	// given the state, we determine whether the mover turns left or right
+	// this is done using the 'dir' variable
+	switch(true) {
+		case (state == 0 || state == 1):
+			// turn left
+			if (dir > 0) {
+				dir--;
+			}
+			else {
+				dir = 3;
+			}
+			break;
+		case (state == 2 || state == 3):
+			// turn right
+			if (dir < 3) {
+				dir++;
+			}
+			else {
+				dir = 0;
+			}
+			break;
+	}
+
+	// after the direction has been manipulated by the previous switch statement,
+	// we move the mover in its new direction
+	switch(dir) {
+		case 0:
+			// triangle -> north
+			posY-=18;
+			draw_triangle_N(contxt, posX, posY);
+			break;
+		case 1:
+			// triangle -> east
+			posX+=18;
+			draw_triangle_E(contxt, posX, posY);
+			break;
+		case 2:
+			// triangle -> south
+			posY+=18;
+			draw_triangle_S(contxt, posX, posY);
+			break;
+		case 3:
+			// triangle -> west
+			posX-=18;
+			draw_triangle_W(contxt, posX, posY);
+	}
+
+	contxt.restore();
+
+	// executes every 1/10 of a second
+	setTimeout(move, 100, contxt, state, dir, posX, posY, colors, moves);
+
+	return;
 }
+
