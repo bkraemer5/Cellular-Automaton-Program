@@ -15,6 +15,7 @@ INTRO:
 
 CONTENTS:
 	Ant-12.html
+	README.txt
 	assets {
 		js_functions.js
 		style.css
